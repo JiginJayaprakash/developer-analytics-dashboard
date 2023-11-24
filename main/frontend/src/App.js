@@ -8,7 +8,7 @@ const App = () => {
   useEffect(
     () => {
       axios
-        .get("/api/rest/")
+        .get("/api/rest/data")
         .then((res) => setdata(res.data))
         .catch((err) => console.log(err));
     },

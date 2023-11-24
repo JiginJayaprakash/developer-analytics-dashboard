@@ -1,0 +1,28 @@
+services:
+  api:
+    build: ./backend        
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - react_build:/frontend/build
+
+  nginx:
+    build:
+      context: ./nginx
+    image: nginx:latest
+    ports:
+      - 80:8080
+    volumes:
+      - react_build:/var/www/frontend
+    depends_on:
+      - api
+      - frontend
+
+volumes:
+  react_build:
