@@ -21,3 +21,21 @@ cd main/frontend
 npm install
 npm start
 ```
+
+
+## Making any changes
+
+*If adding new packages to backend then run*
+
+```
+pip freeze > requirements.txt
+```
+
+*If want to reindex documents*
+
+```
+python manage.py search_index --rebuild
+```
+
+
+

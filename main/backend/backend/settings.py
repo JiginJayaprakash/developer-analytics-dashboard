@@ -136,6 +136,7 @@ CORS_ORIGIN_WHITELIST = [
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts':'http://localhost:9200'
+        'hosts':'https://798f29903468410b9760cd122b81830c.us-central1.gcp.cloud.es.io:443',
+        'api_key': 'Y1B4eEVJd0JaQlozaDdWVHFheXU6YWFBMjNmQ2lTWENGaXI0Mi1tcmJBdw==',
     }
 }
