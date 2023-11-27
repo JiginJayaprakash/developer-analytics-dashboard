@@ -10,4 +10,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/rest/', include(router.urls)),
     path('api/visit/<int:user_id>', views.hello_world),
+    path('api/search/' , views.LogDataDocumentView.as_view({'get': 'list'})),
 ]

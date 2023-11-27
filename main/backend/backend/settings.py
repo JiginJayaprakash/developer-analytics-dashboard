@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'corsheaders',
     'rest_framework',
-    'rest_api'
+    'rest_api',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf'
 ]
 
 MIDDLEWARE = [
@@ -131,3 +133,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ORIGIN_WHITELIST = [
      'http://localhost:3000'
 ]
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts':'https://798f29903468410b9760cd122b81830c.us-central1.gcp.cloud.es.io:443',
+        'api_key': 'Y1B4eEVJd0JaQlozaDdWVHFheXU6YWFBMjNmQ2lTWENGaXI0Mi1tcmJBdw==',
+    }
+}

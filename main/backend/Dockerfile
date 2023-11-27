@@ -2,9 +2,15 @@ FROM  python:3.8.13-bullseye
 
 ENV PYTHONUNBUFFERED=1
 
-RUN pip install django djangorestframework django-cors-headers gunicorn
+RUN pip install --upgrade pip
 
-WORKDIR /backend
+RUN mkdir /app
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 COPY . .
 
