@@ -49,5 +49,5 @@ services:
       start_period: 20s
 
 volumes:
-  react_build:
   postgres_data:
+  react_build:

@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-5yw)$)$wh&lmcr=&!$el%(_wz7(eg5s+%hi^iyi0-vcb0#nwe$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','0.0.0.0', 'django','127.0.0.1','db']
+ALLOWED_HOSTS = ['localhost','0.0.0.0', 'django','127.0.0.1','db','*']
 
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 
@@ -93,7 +93,7 @@ WSGI_APPLICATION = "backend.wsgi.application"
 #     }
 # }
 
-DATABASES = {'default': dj_database_url.config(default='postgres://postgres:postgres@localhost/postgres')}
+DATABASES = {'default': dj_database_url.config(default='postgres://postgres:postgres@postgres_db1/postgres')}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -140,6 +140,10 @@ CORS_ORIGIN_WHITELIST = [
      'http://localhost:3000',
      'http://localhost:5432'
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
 
 ELASTICSEARCH_DSL = {
     'default': {
