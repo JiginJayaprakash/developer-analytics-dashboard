@@ -12,6 +12,7 @@ docker-compose up
 
 ```
 cd main/backend
+pip install -r requirements.txt
 python manage.py runserver
 ```
 
