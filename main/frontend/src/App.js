@@ -7,6 +7,10 @@ const App = () => {
   const [data, setdata] = useState([]);
   useEffect(
     () => {
+      // const instance = axios.create({
+      //   baseURL: 'http://localhost:8000',
+      //   timeout: 1000
+      // });
       axios
         .get("/api/rest/data")
         .then((res) => setdata(res.data))

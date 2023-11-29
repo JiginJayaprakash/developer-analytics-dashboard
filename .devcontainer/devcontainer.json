@@ -1,10 +1,11 @@
 {
     "hostRequirements": {
-        "cpus": 8,
-        "memory": "16gb",
-        "storage": "64gb"
+        "cpus": 2,
+        "memory": "8gb",
+        "storage": "32gb"
      },
     "name": "Python 3",
+    
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
     "image": "mcr.microsoft.com/devcontainers/python:0-3.11-bullseye",
     "features": {
@@ -13,6 +14,21 @@
       "ghcr.io/devcontainers/features/docker-in-docker:2":{},
       "ghcr.io/devcontainers-contrib/features/elasticsearch-asdf:2":{}
     },
+    "forwardPorts": [5432,8000,3000],
+	"portsAttributes": {
+		"3000": {
+			"label": "frontent port",
+			"onAutoForward": "notify"
+		},
+		"5432": {
+			"label": "postgresqlDB",
+			"onAutoForward": "silent"
+		},
+		"8000": {
+			"label": "Api port",
+			"onAutoForward": "notify"
+		}
+	},
   
     // Features to add to the dev container. More info: https://containers.dev/features.
     // "features": {},
@@ -21,10 +37,58 @@
     // "forwardPorts": [],
   
     // Use 'postCreateCommand' to run commands after the container is created.
-    //"postCreateCommand": "pip3 install --user -r requirements.txt",
-    "postCreateCommand": "pip install django djangorestframework django-cors-headers django_elasticsearch_dsl django_elasticsearch_dsl_drf gunicorn"
+    "postCreateCommand": "pip3 install --user -r requirements.txt",
+    //"postCreateCommand": "pip install django djangorestframework django-cors-headers django_elasticsearch_dsl django_elasticsearch_dsl_drf gunicorn"
     // Configure tool-specific properties.
-    // "customizations": {},
+    "customizations": {
+      // Configure properties specific to VS Code.
+      "vscode": {
+        // Set *default* container specific settings.json values on container create.
+        "settings": {
+          "sqltools.connections": [
+            {
+              "name": "postgres",
+              "driver": "PostgreSQL",
+              "previewLimit": 50,
+              "server": "localhost",
+              "port": 5432,
+              "database": "postgres",
+              "username": "postgres",
+              "password": "postgres"
+            }
+          ],
+          "taskExplorer.enabledTasks": {"python": false},
+          "python.defaultInterpreterPath": "/usr/local/bin/python",
+          "python.linting.enabled": true,
+          "python.testing.pytestEnabled": true,
+          "python.testing.unittestEnabled": false,
+          "[python]": {
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+              "source.fixAll": true
+            }
+          },
+          "python.formatting.provider": "black",
+          "files.exclude": {
+            "**/*.coverage": true,
+            ".ruff_cache": true,
+            ".pytest_cache": true
+          }
+        },
+  
+        // Add the IDs of extensions you want installed when the container is created.
+        "extensions": [
+          "ms-python.python",
+          "ms-python.vscode-pylance",
+          "ms-python.black-formatter",
+          "charliermarsh.ruff",
+          "ms-azuretools.vscode-bicep",
+          "mtxr.sqltools",
+          "mtxr.sqltools-driver-pg",
+          "spmeesseman.vscode-taskexplorer"
+        ]
+      }
+    }
   
     // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
     // "remoteUser": "root"
