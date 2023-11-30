@@ -1,5 +1,9 @@
 # developer-analytics-dashboard
 
+## Info
+
+Click on cards to see the filter
+
 
 ## How to run with docker
 

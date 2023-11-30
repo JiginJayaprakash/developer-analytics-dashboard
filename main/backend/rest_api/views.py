@@ -11,6 +11,7 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     FilteringFilterBackend,
     OrderingFilterBackend,
     SearchFilterBackend,
+    FacetedSearchFilterBackend
 )
 
 class Rest_ApiView(viewsets.ModelViewSet):
@@ -35,13 +36,22 @@ class LogDataDocumentView(DocumentViewSet):
     filter_backends = [
         OrderingFilterBackend,
         SearchFilterBackend,
-        FilteringFilterBackend
+        FilteringFilterBackend,
+        FacetedSearchFilterBackend
     ]
    
     search_fields = ('user_id', 'timestamp', 'status')
     multi_match_search_fields = ('user_id', 'timestamp')
     filter_fields = {
       'user_id', 'timestamp', 'status'
+    }
+
+    faceted_search_fields = {
+        'state_global': {
+            'field': 'state.raw',
+            'enabled': True,
+            'global': True,  # This makes the aggregation global
+        },
     }
         # Define filtering fields
     # filter_fields = {

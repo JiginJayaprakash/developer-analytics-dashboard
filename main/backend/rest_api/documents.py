@@ -15,6 +15,11 @@ PUBLISHER_INDEX.settings(
 @PUBLISHER_INDEX.doc_type
 class LogDataDocument(Document):
     id = fields.IntegerField(attr='id')
+    # user_id = fields.IntegerField(
+    #     fields={
+    #         'raw': fields.StringField(analyzer='keyword'),
+    #     }
+    # )
     user_id = fields.IntegerField(
         # fields={
         #     'raw':{
