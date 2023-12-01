@@ -51,10 +51,12 @@ Button:hover {
 }
 
 
-.table , thead
+.grid-header
 {
-  color:#003399;
+  color:#FFFFFF;
+  background-color:#003399;
 }
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

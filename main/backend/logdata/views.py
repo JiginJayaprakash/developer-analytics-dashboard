@@ -77,7 +77,7 @@ class LogDataDocumentView(DocumentViewSet):
         'status': None
     }
     ordering_fields = {
-        'timestamp': 'desc',
+        'timestamp':  'timestamp',
     }
     ordering = ('timestamp')
         

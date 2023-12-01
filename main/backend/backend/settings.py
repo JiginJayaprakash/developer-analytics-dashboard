@@ -145,9 +145,16 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 
+# ELASTICSEARCH_DSL = {
+#     'default': {
+#         'hosts':'https://798f29903468410b9760cd122b81830c.us-central1.gcp.cloud.es.io:443',
+#         'api_key': 'Y1B4eEVJd0JaQlozaDdWVHFheXU6YWFBMjNmQ2lTWENGaXI0Mi1tcmJBdw==',
+#     }
+# }
+
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts':'https://798f29903468410b9760cd122b81830c.us-central1.gcp.cloud.es.io:443',
-        'api_key': 'Y1B4eEVJd0JaQlozaDdWVHFheXU6YWFBMjNmQ2lTWENGaXI0Mi1tcmJBdw==',
+        'hosts': 'http://es:9200',
+        'http_auth': ('elastic', 'changeme'),
     }
 }
