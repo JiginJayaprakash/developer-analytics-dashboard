@@ -7,6 +7,55 @@
   pointer-events: none;
 }
 
+.filter{
+  overflow: hidden;
+  transition: 0.1s;
+  padding-top: 0px;
+  height: 100px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  color: #FFFFFF;
+}
+
+Button {
+  margin: 0 5px;
+  border: 1px solid #0077CC;
+  border-radius: 15px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  direction: ltr;
+  display: block;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -.022em;
+  line-height: 1.47059;
+  min-width: 30px;
+  overflow: visible;
+  padding: 15px 12px;
+  text-align: center;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  background-color: #003399;
+  
+}
+
+Button:hover {
+  background-color: #66CCFF;
+  text-decoration: none;
+}
+
+
+.table , thead
+{
+  color:#003399;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

@@ -1,5 +1,9 @@
 # developer-analytics-dashboard
 
+## Info
+
+Click on cards to see the filter
+
 
 ## How to run with docker
 
@@ -35,6 +39,7 @@ pip freeze > requirements.txt
 *If want to reindex documents*
 
 ```
+python manage.py flush
 python manage.py search_index --rebuild
 ```
 
