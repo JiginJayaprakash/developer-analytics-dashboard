@@ -17,6 +17,7 @@ For viewing more indexed result please check https://django-elasticsearch-dsl-dr
 ## How to run with docker
 
 ```
+cd main
 docker-compose build
 docker-compose up
 ```
