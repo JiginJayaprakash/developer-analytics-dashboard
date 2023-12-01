@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Rest_Api",
+            name="logdata",
             fields=[
                 (
                     "id",

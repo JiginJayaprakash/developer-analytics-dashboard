@@ -39,6 +39,7 @@ pip freeze > requirements.txt
 *If want to reindex documents*
 
 ```
+python manage.py flush
 python manage.py search_index --rebuild
 ```
 

@@ -12,11 +12,12 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimeField } from '@mui/x-date-pickers/DateTimeField';
 import { Button } from '@mui/base/Button';
-import Stack from '@mui/material/Stack';
 import 'moment/locale/en-gb';
+import { DataGrid } from '@mui/x-data-grid';
+import Grid from '@mui/material/Grid';
 
 const App = () => {
-  const styleCard = { width: 170, float: 'left', margin: 1, cursor: 'pointer' };
+  const styleCard = { width: 170, float: 'right', margin: 1, cursor: 'pointer' };
   const styleTypoHeader = { fontSize: 20, color: "#003399", textAlign: "center" };
   const styleTypoContent = { fontSize: 40, color: "#003399", textAlign: "center" };
   var today = new Date();
@@ -24,14 +25,16 @@ const App = () => {
   yesterday.setDate(today.getDate() - 1);
   const [filterDatetime, setfilterDatetime] = useState({ 'startDateTime': moment(yesterday), 'endDateTime': moment(today) });
   const [data, setdata] = useState([]);
-  const [showFilter, setshowFilter] = useState(true);
   const [cardData, setcardData] = useState({ "uniqueUsersCount": 0, "totalCallsCount": 0, "totalFailureCount": 0 });
-  const filterText = 'click here to toggle filter'
-  const styleDate = { color: "#FFFFFF" }
-  const [graphData, setgraphData] = useState([["test1", "test2"], [1, 2], [1, 2], [1, 2]]);
-  const changeFilterClick = () => {
-    setshowFilter(!showFilter);
-  }
+  const [graphData, setgraphData] = useState([[moment(yesterday).format('DD-MM-YYYY')], [0], [0], [0]]);
+  const columns = [
+    { field: 'user_id', headerName: 'User Id', width: 100 },
+    { field: 'timestamp', headerName: 'Timestamp', width: 200, valueFormatter: params => moment(params?.value).format("DD/MM/YYYY HH:mm") },
+    { field: 'status', headerName: 'Status', width: 150, valueFormatter: params => params?.value ? "Success" : "Fail" },
+    { field: 'error_message', headerName: 'Error Message', width: 150 },
+    { field: 'request', headerName: 'Request', width: 100 },
+    { field: 'response', headerName: 'Response', width: 150 },
+  ];
   const changeDateFilter = (input) => {
     today = new Date();
     var secondDate = new Date(today);
@@ -59,43 +62,45 @@ const App = () => {
     }
 
     axios
-      .get("/api/search/?timestamp__range=" + start.format('YYYY-MM-DDTHH:mm:ss') + "__" + end.format('YYYY-MM-DDTHH:mm:ss'))
+      .get("/api/search/?page=1&page_size=1000&timestamp__range=" + start.format('YYYY-MM-DDTHH:mm:ss') + "__" + end.format('YYYY-MM-DDTHH:mm:ss'))
       .then((res) => {
-        setdata(res.data);
-        var uniqueUsers = res.data.map(call => call.user_id).filter((user_id, index, array) => {
-          return array.indexOf(user_id) === index;
-        });
-        var failCall = res.data.filter((call) => {
-          return call.status === false;
-        });
-        setcardData({ "uniqueUsersCount": uniqueUsers.length, "totalCallsCount": res.data.length, "totalFailureCount": failCall.length })
-        var graph = {}
-        res.data.map(call => {
-          var momentData = moment(call.timestamp).format('DD-MM-YYYY');
-          if (!graph[momentData]) {
-            graph[momentData] = { "user": [call.user_id], "successCall": call.status ? 1 : 0, "failCall": call.status ? 0 : 1 };
-          }
-          else {
-            if (call.status) {
-              graph[momentData].successCall = graph[momentData].successCall + 1;
+        var d = res.data.results;
+        if (d != null && d.length > 0) {
+          setdata(d);
+          var uniqueUsers = d.map(call => call.user_id).filter((user_id, index, array) => {
+            return array.indexOf(user_id) === index;
+          });
+          var failCall = d.filter((call) => {
+            return call.status === false;
+          });
+          setcardData({ "uniqueUsersCount": uniqueUsers.length, "totalCallsCount": d.length, "totalFailureCount": failCall.length })
+          var graph = {}
+          d.map(call => {
+            var momentData = moment(call.timestamp).format('DD-MM-YYYY');
+            if (!graph[momentData]) {
+              graph[momentData] = { "user": [call.user_id], "successCall": call.status ? 1 : 0, "failCall": call.status ? 0 : 1 };
             }
             else {
-              graph[momentData].failCall = graph[momentData].failCall + 1;
+              if (call.status) {
+                graph[momentData].successCall = graph[momentData].successCall + 1;
+              }
+              else {
+                graph[momentData].failCall = graph[momentData].failCall + 1;
+              }
+              graph[momentData].user.push(call.user_id);
             }
-            graph[momentData].user.push(call.user_id);
-          }
-        });
-        var keys = Object.keys(graph)
-        var unique = keys.map(function (key) {
-         return graph[key].user.map(u => u).filter((user_id, index, array) => {
-            return array.indexOf(user_id) === index;
-          }).length;
+          });
+          var keys = Object.keys(graph)
+          var unique = keys.map(function (key) {
+            return graph[key].user.map(u => u).filter((user_id, index, array) => {
+              return array.indexOf(user_id) === index;
+            }).length;
 
-        });
-        var sc = keys.map(function (key) { return graph[key].successCall });
-        var fc = keys.map(function (key) { return graph[key].failCall });
-        setgraphData([keys, unique, sc, fc]);
-
+          });
+          var sc = keys.map(function (key) { return graph[key].successCall });
+          var fc = keys.map(function (key) { return graph[key].failCall });
+          setgraphData([keys, unique, sc, fc]);
+        }
       })
       .catch((err) => console.log(err));
   }
@@ -103,113 +108,118 @@ const App = () => {
 
   useEffect(
     () => {
-
+      applyDateFilter(filterDatetime.startDateTime, filterDatetime.endDateTime);
     },
     []
+
   );
   return (
     <div>
-      <Container sx={{ position: 'fixed', width: "300px", display: showFilter ? 'block' : "none", zIndex: 1 }} className='filter' >
-        <Box sx={{ height: '100vh' }} >
-          <Stack spacing={1} direction="column">
-            <Button onClick={() => changeDateFilter(1)}>Last 24 hours</Button>
-            <Button onClick={() => changeDateFilter(2)}>Last 7 days</Button>
-            <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="en-gb">
-              <DateTimeField sx={styleDate}
-                label="Select Start DateTime Range"
-                value={filterDatetime.startDateTime}
-                onChange={(value) => setfilterDatetime({ ...filterDatetime, 'startDateTime': value })}
-              />
-              <DateTimeField sx={styleDate}
-                label="Select End DateTime Range"
-                value={filterDatetime.endDateTime}
-                onChange={(value) => setfilterDatetime({ ...filterDatetime, 'endDateTime': value })}
-              />
-            </LocalizationProvider>
-            <Button onClick={() => applyDateFilter(filterDatetime.startDateTime, filterDatetime.endDateTime)}>Apply</Button>
-          </Stack>
-        </Box>
-      </Container>
       <Container maxWidth="100vw" sx={{ position: 'relative' }} >
-        <Box sx={{ height: '100vh' }} >
-          <Card onClick={changeFilterClick} sx={styleCard} title={filterText}>
-            <CardContent>
-              <Typography sx={styleTypoHeader} >
-                Unique Users
-              </Typography>
-              <Typography sx={styleTypoContent} >
-                {cardData.uniqueUsersCount}
-              </Typography>
-            </CardContent>
-          </Card>
-          <Card onClick={changeFilterClick} sx={styleCard} title={filterText} >
-            <CardContent>
-              <Typography sx={styleTypoHeader} >
-                Total calls
-              </Typography>
-              <Typography sx={styleTypoContent} >
-                {cardData.totalCallsCount}
-              </Typography>
-            </CardContent>
-          </Card>
-          <Card onClick={changeFilterClick} sx={styleCard} title={filterText}>
-            <CardContent>
-              <Typography sx={styleTypoHeader}>
-                Total failures
-              </Typography>
-              <Typography sx={styleTypoContent} >
-                {cardData.totalFailureCount}
-              </Typography>
-            </CardContent>
-          </Card>
-
-          <BarChart
-            xAxis={[
-              {
-                id: 'barCategories',
-                data: graphData[0],
-                scaleType: 'band',
-              },
-            ]}
-            series={[
-              {
-                label:'success',
-                  data: graphData[2],
-          color: '#66CCFF',
-          stack: 'stack1'
-              },
-              { data: graphData[1], label: 'user' , color: '#003399',},
-              { data: graphData[3], label: 'fail', stack: 'stack1', color: '#003399', },
-            ]}
-          height={350}
-          />
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">User ID</th>
-                <th scope="col">Timestamp</th>
-                <th scope="col">Status: Success or failure</th>
-                <th scope="col">Error message</th>
-                <th scope="col">Request</th>
-                <th scope="col">Response</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((e) => {
-                return (<tr>
-                  <td>{e.user_id}</td>
-                  <td>{moment(e.timestamp).format('MMMM Do YYYY, h:mm:ss a')}</td>
-                  <td>{e.status === true ? "Success" : "Fail"}</td>
-                  <td>{e.error_message}</td>
-                  <td>{e.request}</td>
-                  <td>{e.response}</td>
-                </tr>)
-              })}
-            </tbody>
-          </table>
+        <Box sx={{ height: '95vh' }} >
+          <Grid container spacing={1}>
+            <Grid item xl={2} style={{ display: "flex", gap: "1rem" }}>
+              <Card sx={styleCard} >
+                <CardContent>
+                  <Typography sx={styleTypoHeader} >
+                    Unique Users
+                  </Typography>
+                  <Typography sx={styleTypoContent} >
+                    {cardData.uniqueUsersCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xl={2} style={{ display: "flex", gap: "1rem" }}>
+              <Card sx={styleCard}  >
+                <CardContent>
+                  <Typography sx={styleTypoHeader} >
+                    Total calls
+                  </Typography>
+                  <Typography sx={styleTypoContent} >
+                    {cardData.totalCallsCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xl={2} style={{ display: "flex", gap: "1rem" }}>
+              <Card sx={styleCard} >
+                <CardContent>
+                  <Typography sx={styleTypoHeader}>
+                    Total failures
+                  </Typography>
+                  <Typography sx={styleTypoContent} >
+                    {cardData.totalFailureCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xl={2}></Grid>
+            <Grid item xl={4} style={{ display: "flex", gap: "1rem" }}>
+              <Card sx={{ width: 400, float: 'left', margin: 1, cursor: 'pointer' }} >
+                <Grid container spacing={1}>
+                  <Grid item sm={12}></Grid>
+                  <Grid item sm={12} style={{ display: "flex", gap: "1rem" }}>
+                    <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="en-gb">
+                      <DateTimeField
+                        label="Select Start DateTime Range"
+                        value={filterDatetime.startDateTime}
+                        onChange={(value) => setfilterDatetime({ ...filterDatetime, 'startDateTime': value })}
+                      />
+                      <DateTimeField
+                        label="Select End DateTime Range"
+                        value={filterDatetime.endDateTime}
+                        onChange={(value) => setfilterDatetime({ ...filterDatetime, 'endDateTime': value })}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                  <Grid item sm={4} style={{ display: "flex", gap: "1rem" }}>
+                    <Button onClick={() => changeDateFilter(1)}>Last 24 hours</Button>
+                  </Grid>
+                  <Grid item sm={4} style={{ display: "flex", gap: "1rem" }}>
+                    <Button onClick={() => changeDateFilter(2)}>Last 7 days</Button>
+                  </Grid>
+                  <Grid item sm={1}></Grid>
+                  <Grid item sm={3} style={{ display: "flex", gap: "1rem" }}>
+                    <Button onClick={() => applyDateFilter(filterDatetime.startDateTime, filterDatetime.endDateTime)}>Apply</Button>
+                  </Grid>
+                </Grid>
+              </Card>
+            </Grid>
+            <Grid item xl={36} style={{ display: "flex", gap: "1rem" }}></Grid>
+            <Grid item xl={6} style={{ display: "flex", gap: "1rem" }}>
+              <DataGrid columns={columns} rows={data}
+                initialState={{
+                  pagination: { paginationModel: { pageSize: 10 } },
+                }}
+              />
+            </Grid>
+            <Grid item xl={6} style={{ display: "flex", gap: "1rem" }}>
+              <BarChart
+                xAxis={[
+                  {
+                    id: 'barCategories',
+                    data: graphData[0],
+                    scaleType: 'band',
+                  },
+                ]}
+                series={[
+                  {
+                    label: 'success',
+                    data: graphData[2],
+                    color: '#66CCFF',
+                    stack: 'stack1'
+                  },
+                  { data: graphData[1], label: 'user', color: '#CCFFCC', },
+                  { data: graphData[3], label: 'fail', stack: 'stack1', color: '#003399', },
+                ]}
+                height={600}
+              />
+            </Grid>
+          </Grid>
         </Box>
       </Container>
-    </div>
+    </div >
   );
 }
 

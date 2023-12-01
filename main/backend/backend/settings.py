@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'corsheaders',
     'rest_framework',
-    'rest_api',
+    'logdata',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf'
 ]
