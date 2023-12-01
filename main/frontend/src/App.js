@@ -28,18 +28,18 @@ const App = () => {
   const [cardData, setcardData] = useState({ "uniqueUsersCount": 0, "totalCallsCount": 0, "totalFailureCount": 0 });
   const [graphData, setgraphData] = useState([[moment(yesterday).format('DD-MM-YYYY')], [0], [0], [0]]);
   const columns = [
-    { field: 'user_id', headerName: 'User Id', width: 100, headerClassName: 'grid-header', headerAlign: 'center' },
+    { field: 'user_id', headerName: 'User Id', width: 100, headerClassName: 'grid-header' },
     {
-      field: 'timestamp', headerName: 'Timestamp', width: 220, headerClassName: 'grid-header', headerAlign: 'center',
+      field: 'timestamp', headerName: 'Timestamp', width: 210, headerClassName: 'grid-header',
       valueFormatter: params => moment(params?.value).format("DD/MM/YYYY HH:mm")
     },
     {
-      field: 'status', headerName: 'Status: Success or failure', width: 210, headerClassName: 'grid-header', headerAlign: 'center'
+      field: 'status', headerName: 'Status: Success or failure', width: 210, headerClassName: 'grid-header'
       , valueFormatter: params => params?.value ? "Success" : "Fail"
     },
-    { field: 'error_message', headerName: 'Error Message', width: 170, headerClassName: 'grid-header', headerAlign: 'center' },
-    { field: 'request', headerName: 'Request', width: 100, headerClassName: 'grid-header', headerAlign: 'center' },
-    { field: 'response', headerName: 'Response', width: 150, headerClassName: 'grid-header', headerAlign: 'center' },
+    { field: 'error_message', headerName: 'Error Message', width: 170, headerClassName: 'grid-header' },
+    { field: 'request', headerName: 'Request', width: 100, headerClassName: 'grid-header' },
+    { field: 'response', headerName: 'Response', width: 140, headerClassName: 'grid-header' },
   ];
   const changeDateFilter = (input) => {
     today = new Date();
@@ -207,6 +207,7 @@ const App = () => {
                     id: 'barCategories',
                     data: graphData[0],
                     scaleType: 'band',
+                    barGapRatio: 0.1
                   },
                 ]}
                 series={[
