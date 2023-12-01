@@ -3,10 +3,15 @@
 ## Info
 
 /api/visit/4 -  4 is the user_id
+
 /api/random/80 - to generate random 80 records with random dates within last 30 days and random user_Id between 1 and 100
+
 /api/rest/data/ - show all Db records
+
 /api/search/ -  show top 10 indexed records
+
 For viewing more indexed result please check https://django-elasticsearch-dsl-drf.readthedocs.io/en/latest/index.html
+
 
 
 ## How to run with docker
