@@ -22,9 +22,9 @@ jobs:
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       
     - name: Build the Docker image
-      run: docker build -t jayaprakashjigin/developer-analytics-dashboard_backend .
+      run: docker build -t jayaprakashjigin/developer-analytics-dashboard/backend .
     - name: Push to Dockerhub
-      run: docker push jayaprakashjigin/developer-analytics-dashboard:backend_latest
+      run: docker push jayaprakashjigin/developer-analytics-dashboard/backend:latest
 
   build_frontend:
 
@@ -42,8 +42,8 @@ jobs:
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       
     - name: Build the Docker image
-      run: docker build -t jayaprakashjigin/developer-analytics-dashboard_frontend .
+      run: docker build -t jayaprakashjigin/developer-analytics-dashboard/frontend .
     - name: Push to Dockerhub
-      run: docker push jayaprakashjigin/developer-analytics-dashboard:frontend_latest
+      run: docker push jayaprakashjigin/developer-analytics-dashboard/frontend:latest
 
   
