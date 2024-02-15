@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  build:
+  build_backend:
 
     runs-on: ubuntu-latest
     defaults:
@@ -22,6 +22,28 @@ jobs:
       run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       
     - name: Build the Docker image
-      run: docker build -t jayaprakashjigin/developer-analytics-dashboard .
+      run: docker build -t jayaprakashjigin/developer-analytics-dashboard_backend .
     - name: Push to Dockerhub
-      run: docker push jayaprakashjigin/developer-analytics-dashboard:latest
+      run: docker push jayaprakashjigin/developer-analytics-dashboard:backend_latest
+
+  build_frontend:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/main/frontend
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login Dockerhub
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      
+    - name: Build the Docker image
+      run: docker build -t jayaprakashjigin/developer-analytics-dashboard_frontend .
+    - name: Push to Dockerhub
+      run: docker push jayaprakashjigin/developer-analytics-dashboard:frontend_latest
+
+  
