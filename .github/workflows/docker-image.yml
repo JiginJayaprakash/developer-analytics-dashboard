@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  build_backend:
+  build:
 
     runs-on: ubuntu-latest
     defaults:
@@ -28,8 +28,8 @@ jobs:
           cat .env
           
     - name: Build image
-      run: docker compose -f docker-compose.yml build jayaprakashjigin/developer-analytics-dashboard:latest .
+      run: docker compose -f docker-compose.yml build
     - name: Push image to DO Container Registry
-      run: docker compose -f docker-compose.yml push jayaprakashjigin/developer-analytics-dashboard:latest
+      run: docker compose -f docker-compose.yml push
 
   
