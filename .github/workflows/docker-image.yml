@@ -1,9 +1,7 @@
-name: Docker Image CI
+name: Docker Image CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
 
 jobs:
@@ -11,11 +9,16 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ github.workspace }}/main
 
     steps:
     - uses: actions/checkout@v3
+    - name: Login Dockerhub
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      
     - name: Build the Docker image
-      run:  docker-compose up -d
+      run: docker build -t jayaprakashjigin/developer-analytics-dashboard .
+    - name: Push to Dockerhub
+      run: docker push jayaprakashjigin/developer-analytics-dashboard:latest
