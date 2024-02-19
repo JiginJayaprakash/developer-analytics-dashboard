@@ -36,7 +36,7 @@ services:
       - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
       - xpack.security.enabled=$ELASTIC_SECURITY
       - bootstrap.memory_lock= true
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - ES_JAVA_OPTS=-Xms64m -Xmx128m
     container_name: es
     healthcheck:
       test: curl -s http://es:9200 >/dev/null || exit 1
