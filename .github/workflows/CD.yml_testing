@@ -13,8 +13,8 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    - name: Pull Backend Docker image
-      run: sudo docker pull jayaprakashjigin/developer-analytics-dashboard:backend
+    - name: Remove all containers
+      run: sudo docker container rm
     - name: Pull Frontend Docker image
       run: sudo docker pull jayaprakashjigin/developer-analytics-dashboard:frontend
     - name: Pull DB Docker image
@@ -22,7 +22,7 @@ jobs:
     - name: Pull ES Docker image
       run: sudo docker pull elasticsearch:8.11.1
     - name: Pull nginx Docker image
-      run: sudo docker pull nginx:latest
+      run: sudo docker pull jayaprakashjigin/developer-analytics-dashboard:nginx
     - name: Delete Old docker container
       run: sudo docker rm -f dad-container || true
     - name: Run es Docker Container
