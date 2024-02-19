@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ github.workspace }}/main
+        working-directory: ${{ github.workspace }}/main/backend
 
     steps:
     - uses: actions/checkout@v3
@@ -27,9 +27,48 @@ jobs:
           echo "${{ secrets.SERVER_ENV_PROD }}" > .env
           cat .env
           
-    - name: Build image
-      run: docker compose -f docker-compose.yml build
-    - name: Push image to DO Container Registry
-      run: docker compose -f docker-compose.yml push
+    - name: Build the Docker image
+      run: docker build -t jayaprakashjigin/developer-analytics-dashboard:backend .
+    - name: Push to Dockerhub
+      run: docker push jayaprakashjigin/developer-analytics-dashboard:backend
 
+  build_frontend:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/main/frontend
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login Dockerhub
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+    - name: Build the Docker image
+      run: docker build -t jayaprakashjigin/developer-analytics-dashboard:frontend .
+    - name: Push to Dockerhub
+      run: docker push jayaprakashjigin/developer-analytics-dashboard:frontend
+
+  build_nginx:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/main/nginx
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login Dockerhub
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+
+    - name: Build the Docker image
+      run: docker build -t jayaprakashjigin/developer-analytics-dashboard:nginx .
+    - name: Push to Dockerhub
+      run: docker push jayaprakashjigin/developer-analytics-dashboard:nginx
   
